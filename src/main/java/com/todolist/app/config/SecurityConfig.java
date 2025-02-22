@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -28,7 +31,10 @@ public class SecurityConfig{
 
     @Autowired
     private UserDetailsService userDetailsService;
-
+    
+    @Autowired
+    private JwtFilter jwtFilter;
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12); // Usa BCrypt per il confronto delle password
@@ -42,6 +48,7 @@ public class SecurityConfig{
                 // .authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(HttpMethod.DELETE, "/todos/*").hasRole("ADMIN")
+                                .requestMatchers("/login").permitAll()
                                 .requestMatchers("/register").hasAnyRole("USER", "ADMIN")
                     .anyRequest().authenticated()
                 )
@@ -49,6 +56,8 @@ public class SecurityConfig{
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> 
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
 
@@ -58,7 +67,11 @@ public class SecurityConfig{
         provider.setPasswordEncoder(passwordEncoder()); // non sicuro, solo ai fini didattici
         provider.setUserDetailsService(userDetailsService);
         return provider;
-        
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
     // @Bean
     // public UserDetailsService userDetailsService(){

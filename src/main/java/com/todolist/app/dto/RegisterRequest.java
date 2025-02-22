@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.Set;
 
+import com.todolist.app.validation.ValidRoles;
+
 public class RegisterRequest { // gestire la validazione di richiesta registrazione utente
 
     @NotBlank(message = "username is mandatory")

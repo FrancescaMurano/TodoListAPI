@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
         
         String paramName = ex.getName();
         
-        String errorMessage = "Invalid value for parameter: " + paramName + ". Please provide a valid Long value.";
+        String errorMessage = "Invalid value for parameter: " + paramName + ". Please provide a correct value.";
 
         ErrorResponse errorResponse = new ErrorResponse(400, errorMessage);
 

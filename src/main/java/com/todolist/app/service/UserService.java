@@ -11,6 +11,7 @@ public interface UserService {
     User findById(Long id);
     void deleteById(Long id);
     User findUserByUsername(String username);
+    String verify(User user);
 
     
 }  

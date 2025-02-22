@@ -1,20 +1,17 @@
-package com.todolist.app.service;
+package com.todolist.app.service.impl;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.todolist.app.entity.Task;
 import com.todolist.app.repository.TaskRepository;
+import com.todolist.app.service.TaskService;
 
 @Service
 public class TaskServiceImpl implements TaskService {
-    
-    private TaskRepository taskRepository;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository){
-        this.taskRepository = taskRepository;
-    }
+    private TaskRepository taskRepository;
 
     @Override
     public Task save(Task Task){

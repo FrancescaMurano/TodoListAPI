@@ -58,12 +58,9 @@ public class UserController {
                          .body(user);
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<List<User>> login() {
-        List<User> users =  userService.findAll();
-
-        return ResponseEntity.status(HttpStatus.OK)
-        .body(users);
+    @PostMapping("/login")
+    public String login (@RequestBody User user){
+        return userService.verify(user);
     }
 
 }

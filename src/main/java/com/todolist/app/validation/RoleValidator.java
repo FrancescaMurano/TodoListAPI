@@ -1,4 +1,4 @@
-package com.todolist.app.dto;
+package com.todolist.app.validation;
 
     
 import jakarta.validation.ConstraintValidator;
