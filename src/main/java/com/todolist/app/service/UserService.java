@@ -1,6 +1,8 @@
 package com.todolist.app.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.todolist.app.entity.User;
 
 
@@ -11,7 +13,7 @@ public interface UserService {
     User findById(Long id);
     void deleteById(Long id);
     User findUserByUsername(String username);
-    String verify(User user);
+    Map<String,String> verify(User user);
 
     
 }  

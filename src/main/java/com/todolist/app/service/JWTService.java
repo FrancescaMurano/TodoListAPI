@@ -90,4 +90,29 @@ public class JWTService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username) // L'username dell'utente come subject
+                .setIssuedAt(new Date()) // Data di creazione
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 giorni di validità
+                .signWith(getKey(), SignatureAlgorithm.HS256) // Firma il token con la chiave segreta
+                .compact();
+    }
+
+    public String refreshToken(Map<String, String> refreshToken) {
+        try {
+            // Verifica che il refresh token sia valido
+            String username = extractUserName(refreshToken.get("refreshToken"));
+            if (isTokenExpired(refreshToken.get("refreshToken"))) {
+                throw new RuntimeException("Refresh token scaduto! Devi fare il login di nuovo.");
+            }
+            
+            // Se è valido, genera un nuovo access token
+            return generateToken(username, Set.of("ROLE_USER")); // Puoi modificare il ruolo in base alle necessità
+    
+        } catch (Exception e) {
+            throw new RuntimeException("Refresh Token non valido!", e);
+        }
+    }
 }
