@@ -4,15 +4,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.todolist.app.dto.RegisterRequest;
 import com.todolist.app.entity.User;
 import com.todolist.app.error.ErrorResponse;
+import com.todolist.app.service.JWTService;
 import com.todolist.app.service.UserService;
 import jakarta.validation.Valid;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-// import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -21,10 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserController {
 
     private final UserService userService;
+    private final JWTService jwtService;
+
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JWTService jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     // @GetMapping("/csrf-token")
@@ -59,8 +62,23 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login (@RequestBody User user){
-        return userService.verify(user);
+    public ResponseEntity<Object> login (@RequestBody User user){
+        return ResponseEntity.status(200).body(userService.verify(user));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Object> refreshToken(@RequestBody Map<String, String> refreshToken) {
+
+        try {
+            String newAccessToken = jwtService.refreshToken(refreshToken);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("accessToken", newAccessToken);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(403).body("Refresh token non valido o scaduto!");
+        }
     }
 
 }
