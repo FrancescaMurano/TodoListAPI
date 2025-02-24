@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import com.todolist.app.entity.Task;
 import com.todolist.app.repository.TaskRepository;
 import com.todolist.app.service.TaskService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -19,8 +21,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> findAll(){
-        return taskRepository.findAll();
+    public Page<Task> findAll(Pageable pageable){
+        return taskRepository.findAll(pageable);
     }
 
     @Override

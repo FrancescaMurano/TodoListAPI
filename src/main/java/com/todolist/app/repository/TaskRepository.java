@@ -10,6 +10,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findTaskByTitle(String title); // modello e primary key
     Task findTaskByIdAndOwner(Long id, String owner);
-
     
 } 

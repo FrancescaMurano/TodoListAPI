@@ -23,7 +23,6 @@ public class UserController {
     private final UserService userService;
     private final JWTService jwtService;
 
-
     @Autowired
     public UserController(UserService userService, JWTService jwtService) {
         this.userService = userService;
@@ -54,9 +53,8 @@ public class UserController {
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
         user.setRoles(request.getRoles());
-
-
         userService.register(user);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                          .body(user);
     }
@@ -71,11 +69,10 @@ public class UserController {
 
         try {
             String newAccessToken = jwtService.refreshToken(refreshToken);
-
             Map<String, String> response = new HashMap<>();
             response.put("accessToken", newAccessToken);
-
             return ResponseEntity.ok(response);
+
         } catch (Exception e) {
             return ResponseEntity.status(403).body("Refresh token non valido o scaduto!");
         }

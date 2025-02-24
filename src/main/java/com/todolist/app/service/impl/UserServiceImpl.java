@@ -3,10 +3,13 @@ package com.todolist.app.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.todolist.app.entity.User;
 import com.todolist.app.repository.UserRepository;
@@ -25,14 +28,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JWTService jwtService;
 
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Override
     public User register(User user) {
-
         if (repo.findByUsername(user.getUsername()).isPresent()){
             return null;
         }
-
+        user.setPassword(encoder.encode(user.getPassword()));
         return repo.save(user);
     }
 
@@ -53,7 +57,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByUsername(String username) {
-        return repo.findByUsername(username).get();
+        Optional<User> user = repo.findByUsername(username);
+        if(user.isPresent()){
+            return user.get();
+        }
+        return null;
     }
 
     @Override
@@ -64,7 +72,6 @@ public class UserServiceImpl implements UserService {
             map.put("token",jwtService.generateToken(user.getUsername(), user.getRoles()));
             map.put("refresh_token", jwtService.generateRefreshToken(user.getUsername()));
         } 
-
         return map;
     }
     
