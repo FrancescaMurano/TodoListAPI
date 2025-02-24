@@ -57,11 +57,13 @@ public class TaskController {
                                                     @RequestParam(defaultValue = "0") int page,
                                                     @RequestParam(defaultValue = "5") int size,
                                                     @RequestParam(defaultValue = "id") String sortBy,
-                                                    @RequestParam(defaultValue = "true") boolean ascending) {
+                                                    @RequestParam(defaultValue = "true") boolean ascending,
+                                                    @RequestParam(defaultValue = "") List<String> owners
+                                                    ) {
 
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Task> tasks =  taskService.findAll(pageable);
+        Page<Task> tasks =  taskService.findTaskByOwners(pageable, owners);
         return ResponseEntity.ok(new PaginatedResponse<>(tasks));
     }
 

@@ -26,6 +26,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Page<Task> findTaskByOwners(Pageable pageable, List<String> owners) {
+        return taskRepository.findAllByOwnerIn(pageable, owners);
+    }
+
+    @Override
     public Task findById(Long id) {
         Task task = null;
         try {
@@ -54,5 +59,6 @@ public class TaskServiceImpl implements TaskService {
         }
         return false;
     }
+
 
 }
