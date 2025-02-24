@@ -45,4 +45,12 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findTaskByTitle(title);
     }
 
+    @Override
+    public Boolean isOwner(Long id, String username) {
+        if(taskRepository.findTaskByIdAndOwner(id,username) != null){
+            return true;
+        }
+        return false;
+    }
+
 }

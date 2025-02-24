@@ -14,6 +14,5 @@ public interface UserService {
     void deleteById(Long id);
     User findUserByUsername(String username);
     Map<String,String> verify(User user);
-
     
 }  

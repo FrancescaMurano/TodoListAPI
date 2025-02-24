@@ -1,9 +1,7 @@
 package com.todolist.app.entity;
 
 import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;

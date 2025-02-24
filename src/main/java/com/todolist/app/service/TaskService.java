@@ -11,4 +11,5 @@ public interface TaskService {
     Task findById(Long id);
     void deleteById(Long id);
     List<Task> findTaskByTitle(String title);
+    Boolean isOwner(Long id, String username);
 }  

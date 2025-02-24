@@ -17,18 +17,29 @@ public class Task {
     private Long id;
     private String title;
     private String description;
+    private String owner;
 
     public Task(){}
 
-    public Task(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
-
-    public Task(Long id, String title, String description) {
+    public Task(Long id, String title, String description, String owner) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.owner = owner;
+    }
+
+    public Task(String title, String description, String owner) {
+        this.title = title;
+        this.description = description;
+        this.owner = owner;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public Long getId() {
@@ -57,7 +68,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task [id=" + id + ", title=" + title + ", description=" + description + "]";
+        return "Task [id=" + id + ", title=" + title + ", description=" + description + ", owner=" + owner + "]";
     }
-        
+
 }

@@ -1,10 +1,11 @@
 package com.todolist.app.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class TaskController {
 
     @PostMapping("/todos")
     public ResponseEntity<Object> postCreateTask(@RequestBody Task task) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Task> tasks = taskService.findTaskByTitle(task.getTitle());
         
         if(!tasks.isEmpty()){
@@ -35,6 +37,8 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(error);
         }
+
+        task.setOwner(userDetails.getUsername());
         Task temp = taskService.save(task);
         return ResponseEntity.status(HttpStatus.CREATED)
                          .body(temp);
@@ -50,8 +54,10 @@ public class TaskController {
     @PutMapping("/todos/{id}")
     public ResponseEntity<Object> updateTaskById(@PathVariable Long id, @RequestBody Task newTask) {
         Task task = taskService.findById(id);
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if(task != null){
+
+        if(task != null && taskService.isOwner(id, userDetails.getUsername())){
             newTask.setId(id);
             Task tmp = taskService.save(task);
             return ResponseEntity.status(HttpStatus.OK)
@@ -59,7 +65,7 @@ public class TaskController {
         }
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(new ErrorResponse(404, "Task not found!"));
+            .body(new ErrorResponse(404, "Task not found or permission denied!"));
         }
     }
    
